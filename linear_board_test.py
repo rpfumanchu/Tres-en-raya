@@ -12,7 +12,7 @@ def test_add():
     b = LinearBoard()
     for i in range(BOARD_LENGTH):
         b.add("x")
-    assert b.is_full == True
+    assert b.is_full() == True
 
 def test_victory():
     b = LinearBoard()
