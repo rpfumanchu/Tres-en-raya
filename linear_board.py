@@ -8,6 +8,12 @@ class LinearBoard():
     o otro jugador
     None un espacio vacio
     """
+    # aqui también usaremos @classmethod fromList porque si no no estaria definido en square_board
+    @classmethod
+    def fromList(cls, list):
+        board = cls()
+        board.columna = list
+        return board
 
     def __init__(self):
         """
