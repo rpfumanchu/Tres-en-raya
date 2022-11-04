@@ -70,7 +70,7 @@ def find_streak(list, aguja, n):
             #avanzo al siguiente elemneto
             indice = indice +1
         #devolvemos el resultado de comparar con n SIEMPRE Y CUANDO estemos en racha
-        return n >= contador and racha
+        return contador >= n and racha
     else:
         #para valores de n < 0 no tiene sentido
         return False
