@@ -21,6 +21,12 @@ class SquareBoard():
     def __init__(self):
         self.columna = [LinearBoard() for i in range(BOARD_LENGTH)]
 
+    def __repr__(self):
+        return f"{self.__class__} : {self.columna}"
+    #usamos __len__ para que no de error en oracle.py "objeto de tipo SquareBoard no tiene len()"
+    def __len__(self):
+        return len(self.columna)
+
     def is_full(self):
         """
         True si todos los LinearBoard estan llenos
@@ -35,6 +41,10 @@ class SquareBoard():
         devuelve una representacion en formato matriz, es decir, lista de listas
         """
         return list(map(lambda x: x.columna, self.columna))
+
+    #juega una ficha en una columna
+    def add(self, caracter, columna):
+        self.columna[columna].add(caracter)
 
     #detectar victoria
     def is_victory(self, caracter):
