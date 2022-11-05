@@ -27,6 +27,14 @@ class SquareBoard():
     def __len__(self):
         return len(self.columna)
 
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        else:
+            return self.columna == other.columna
+    def __hash__(self):
+        return hash(self.columna)
+
     def is_full(self):
         """
         True si todos los LinearBoard estan llenos
