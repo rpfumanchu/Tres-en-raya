@@ -1,23 +1,46 @@
-from oracle import BaseOracle, ColumnClassification
+from oracle import BaseOracle, ColumnClassification,ColumnRecommendation
 
 class Player():
-    def __init__(self, nombre, caracter=None, oracle = BaseOracle()):
+    def __init__(self, nombre, caracter=None, opponent = None, oracle = BaseOracle()):
         self.nombre = nombre
         self.caracter = caracter
         self.oracle = oracle
+        self.opponent = opponent
 
+    @property
+    def opponent(self):
+        return self._opponent
+
+    @opponent.setter
+    def opponent(self, other):
+        if other != None:
+            self._opponent = other
+            other._opponent = self
 
 
     def play(self, board):
         """
         elije la mejor columna de aquellas que recomienda el oraculo
         """
-        #obten las recomendaciones
+       #pregunto al oraculo
+       #esto es una tupla,una forma sencilla de empaquetar dos o más valores sin tener que crear una clase
+        (best, recommendations) = self._ask_oracle(board)
+
+       #juego en la mejor
+        self._play_on(board, best.indice)
+
+    def _play_on(self, board, position):
+        #juega en la posicion
+        board.add(self.caracter, position)
+
+    def _ask_oracle(self, board):
+        """
+        pregunta al oraculo y devuelve la mejor opción
+        """
+        #obtenemos las recomendaciones y seleccionamos la mejor
         recommendations = self.oracle.get_recommendation(board, self)
-        #selecciona la mejor de todas
         best = self.choose(recommendations)
-        #juega con ella
-        board.add(self.caracter, best.indice)
+        return (best, recommendations)
 
 
     def choose(self, recommendations):
@@ -26,3 +49,37 @@ class Player():
         valid = list(filter(lambda x : x.classification != ColumnClassification.FULL, recommendations))
         #pillamos la primera de las válidas
         return valid[0]
+
+class HumanPlayer(Player):
+    
+    def __init__(self, nombre, caracter=None):
+        super().__init__(nombre, caracter)
+
+    def _ask_oracle(self, board):
+        #le pido al humano que es mi oraculo
+        while True:
+            #pedimos columna al 
+            raw = input("selecciona una columna, humano o h para ayuda")
+            #verificamos que su respuesta no sea una idiotez
+            if is_int(raw) and is_within_column_range(board, int(raw)) and is_non_full_column(board, int(raw)):
+                #si no lo es, jugamos donde ha dicho y salimos del bucle
+                pos = int(raw)
+                return (ColumnRecommendation(pos, None), None)
+
+
+#funciones de validación de indice de columna
+
+def is_non_full_column(board, num):
+    return not board.columna[num].is_full()
+
+#esta dentro del rango de columnas
+def is_within_column_range(board, num):
+    return num >= 0 and num < len(board)
+
+#comprobar que es un enteroes un entero
+def is_int(aString):
+    try:
+        num = int(aString)
+        return True
+    except:
+        return False
