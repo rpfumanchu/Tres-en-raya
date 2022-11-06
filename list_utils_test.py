@@ -1,5 +1,6 @@
 import pytest
 from list_utils import *
+from oracle import ColumnClassification, ColumnRecommendation
 
 def test_find_one():
     aguja = 1
@@ -87,3 +88,15 @@ def test_reverse_matriz():
     assert reverse_matriz([]) == []
     assert reverse_matriz([[0, 1, 2, 3], [0, 1, 2, 3]]) == [
         [3, 2, 1, 0], [3, 2, 1, 0]]
+
+def test_all_same():
+    assert all_same([9,1,2,3,4]) == False
+    assert all_same([[], [], []])
+    assert all_same([])
+
+    assert all_same([ColumnRecommendation(0, ColumnClassification.WIN),
+                    ColumnRecommendation(2, ColumnClassification.WIN) ])
+
+    assert all_same([ColumnRecommendation(0, ColumnClassification.MAYBE),
+                    ColumnRecommendation(2, ColumnClassification.WIN) ]) == False
+

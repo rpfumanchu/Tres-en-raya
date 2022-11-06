@@ -138,3 +138,19 @@ def reverse_matriz(matriz):
     for colum in matriz:
         revm.append(reverse_list(colum))
     return revm
+
+def all_same(l):
+    """
+    devuelve True si todos los elemnetos de la lista son iguales
+    """
+    if l == []:
+        return True
+    else:
+        acumulador = True
+        primero = l[0]
+        for elemen in l:
+            if elemen != primero:
+                acumulador = False
+                break
+        return acumulador
+

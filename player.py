@@ -1,3 +1,4 @@
+from list_utils import all_same
 from oracle import BaseOracle, ColumnClassification,ColumnRecommendation
 import random
 
@@ -51,8 +52,15 @@ class Player():
         #quitamos las no validas 
         #usmos filter para La filter()función extrae elementos de un iterable (lista, tupla, etc.) para los cuales una función devuelve True.
         valid = list(filter(lambda x : x.classification != ColumnClassification.FULL, recommendations))
-        #seleccionamos entre las iguales una al azar con random.choice y una secuencia()
-        return random.choice(valid)
+        #ordenamos por el valor de la clasificación
+        valid = sorted(valid, key=lambda x : x.classification.value, reverse=True)
+        #sin son todas iguales pillo una al azar
+        if all_same(valid):
+            return random.choice(valid) 
+        else:
+            #si no lo son oillo la mas deseable que sera la primera porque para eso las hemos ordenado
+            return valid[0]
+        
 
 class HumanPlayer(Player):
     

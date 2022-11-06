@@ -1,26 +1,28 @@
 from square_board import SquareBoard
 from oracle import BaseOracle
 from player import Player, is_non_full_column, is_within_column_range,is_int
+         
+         #ESTE TEST LO COMENTO POR QUE YA NO HACE FALTA AL HABER CORREGIDO QUE NO JUEGUE SIEMPRE EN LA PRIMERA POSICION DISPONIBLE Y HACER QUE SEA ALEATORIO
 
-def test_play():
-    """
-    comprobar que se juega en la primera columna disponible
-    """
+# def test_play():
+#     """
+#     comprobar que se juega en la primera columna disponible
+#     """
 
-    before = SquareBoard.fromList([[None, None, None, None],
-                                   ['x', 'o', 'x', 'o'],
-                                   ['x', 'o', 'x', 'o'],
-                                  ['x', None, None, None]])
+#     before = SquareBoard.fromList([[None, None, None, None],
+#                                    ['x', 'o', 'x', 'o'],
+#                                    ['x', 'o', 'x', 'o'],
+#                                   ['x', None, None, None]])
 
-    after = SquareBoard.fromList([['x', None, None, None],
-                                   ['x', 'o', 'x', 'o'],
-                                   ['x', 'o', 'x', 'o'],
-                                  ['x', None, None, None]])
+#     after = SquareBoard.fromList([['x', None, None, None],
+#                                    ['x', 'o', 'x', 'o'],
+#                                    ['x', 'o', 'x', 'o'],
+#                                   ['x', None, None, None]])
 
-    player = Player('Chip', 'x', oracle = BaseOracle())
+#     player = Player('Chip', 'x', oracle = BaseOracle())
 
-    player.play(before)
-    assert before == after
+#     player.play(before)
+#     assert before == after
 
 def test_is_within_column_range():
     board = SquareBoard.fromList([['x', None, None, None, ],
