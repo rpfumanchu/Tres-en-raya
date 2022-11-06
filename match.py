@@ -1,3 +1,4 @@
+from square_board import SquareBoard
 
 class Match():
 
@@ -11,7 +12,7 @@ class Match():
         # los guardamos en una lista normal y corriente por que son solo dos jugadores y asi al invertirla el ultimo sera el primero y etc etc
         # este nonbre le pone por hacer referencia a una lista circular
         self._round_robbin = [player1, player2]
-        assert (player1.opponent is not None) and (player2.opponent is not None), "Players are required to have an opponent for recommendations"
+        
 
     # queremos sintaxis de propiedad para esto :puede ser usado para modificar un método para que sea un atributo o propiedad
     @property
@@ -23,4 +24,16 @@ class Match():
 
     def get_player(self, caracter):
         return self._players[caracter]
+
+    def get_winner(self, board):
+        """
+        devuelve el jugador y si no lo hay, devuelve None
+        """
+        if board.is_victory("x"):
+            return self.get_player("x")
+        elif board.is_victory("o"):
+            return self.get_player("o")
+        else:
+            return None
+        pass
 

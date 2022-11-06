@@ -1,4 +1,5 @@
 from oracle import BaseOracle, ColumnClassification,ColumnRecommendation
+import random
 
 class Player():
     def __init__(self, nombre, caracter=None, opponent = None, oracle = BaseOracle()):
@@ -6,6 +7,7 @@ class Player():
         self.caracter = caracter
         self.oracle = oracle
         self.opponent = opponent
+        self.last_move = None
 
     @property
     def opponent(self):
@@ -32,6 +34,8 @@ class Player():
     def _play_on(self, board, position):
         #juega en la posicion
         board.add(self.caracter, position)
+        #guardo mi ultima jugada
+        self.last_move = position
 
     def _ask_oracle(self, board):
         """
@@ -47,8 +51,8 @@ class Player():
         #quitamos las no validas 
         #usmos filter para La filter()función extrae elementos de un iterable (lista, tupla, etc.) para los cuales una función devuelve True.
         valid = list(filter(lambda x : x.classification != ColumnClassification.FULL, recommendations))
-        #pillamos la primera de las válidas
-        return valid[0]
+        #seleccionamos entre las iguales una al azar con random.choice y una secuencia()
+        return random.choice(valid)
 
 class HumanPlayer(Player):
     
@@ -59,7 +63,7 @@ class HumanPlayer(Player):
         #le pido al humano que es mi oraculo
         while True:
             #pedimos columna al 
-            raw = input("selecciona una columna, humano o h para ayuda")
+            raw = input("selecciona una columna, humano o h para HELP!!!   ")
             #verificamos que su respuesta no sea una idiotez
             if is_int(raw) and is_within_column_range(board, int(raw)) and is_non_full_column(board, int(raw)):
                 #si no lo es, jugamos donde ha dicho y salimos del bucle

@@ -1,6 +1,7 @@
 import pytest
 from player import Player,HumanPlayer
 from match import Match
+from square_board import SquareBoard
 
 xavier = None
 otto = None
