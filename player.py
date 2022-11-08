@@ -1,9 +1,10 @@
 from list_utils import all_same
-from oracle import BaseOracle, ColumnClassification,ColumnRecommendation
+from oracle import BaseOracle, ColumnClassification,ColumnRecommendation,SmartOracle
 import random
-
+from beautifultable import BeautifulTable
+from settings import BOARD_LENGTH
 class Player():
-    def __init__(self, nombre, caracter=None, opponent = None, oracle = BaseOracle()):
+    def __init__(self, nombre, caracter=None, opponent = None, oracle = SmartOracle()):
         self.nombre = nombre
         self.caracter = caracter
         self.oracle = oracle
@@ -37,6 +38,18 @@ class Player():
         board.add(self.caracter, position)
         #guardo mi ultima jugada
         self.last_move = position
+
+    #para mostrar las recomendacione al usar help
+    def display_recommendations(self, board):
+        #mapeamos las clasificaciones, se devuelve una lista separada por puntos y a partir de la posicion 1 de la lista de clasificaciones.
+        recs = map(lambda x: str(x.classification).split('.')[1].lower(), self.oracle.get_recommendation(board, self))
+
+        bt = BeautifulTable()
+        bt.rows.append(recs)
+
+        bt.columns.header = [str(i) for i in range(BOARD_LENGTH)]
+
+        print(bt)
 
     def _ask_oracle(self, board):
         """
@@ -77,6 +90,9 @@ class HumanPlayer(Player):
                 #si no lo es, jugamos donde ha dicho y salimos del bucle
                 pos = int(raw)
                 return (ColumnRecommendation(pos, None), None)
+            elif raw == "h":
+                print(self.display_recommendations(board,))
+
 
 
 #funciones de validación de indice de columna

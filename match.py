@@ -35,5 +35,5 @@ class Match():
             return self.get_player("o")
         else:
             return None
-        pass
+        
 

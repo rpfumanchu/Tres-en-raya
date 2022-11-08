@@ -5,9 +5,10 @@ from square_board import SquareBoard
 
 
 class ColumnClassification(Enum):
-    FULL = -1     #imposible
-    MAYBE = 1     #indeseable
-    WIN = 100     #la mejor opcion: gano por narices
+    FULL = -1      #imposible
+    LOSE = 1       #muy indeseable
+    MAYBE = 10     #indeseable
+    WIN = 100      #la mejor opcion: gano por narices
 
 class ColumnRecommendation():
     def __init__(self, indice, classification):
@@ -52,11 +53,25 @@ class SmartOracle(BaseOracle):
         afina la clasificación de super e intenta encontrar columnas WIN
         """
         # llamamos a super
-        recommendation = super().get_recommendation(board, indice, player)
+        recommendation = super().get_column_recommendation(board, indice, player)
         if recommendation.classification == ColumnClassification.MAYBE:
             #se puede mejorar
-            recommendation = self._is_winning_move(board, indice, player)
+            if self._is_winning_move(board, indice, player):
+                recommendation.classification = ColumnClassification.WIN
+            elif self._is_losing_move(board, indice, player):
+                recommendation.classification = ColumnClassification.LOSE
         return recommendation
+
+    def _is_losing_move(self, board, indice, player):
+        """
+        si player juega en índice, ¿genera una jugada vencedora para el oponente en alguna de las demas columnas?
+        """
+        tmp = self._play_on_tmp_board(board, indice, player)
+        will_lose = False
+        for i in range(0, BOARD_LENGTH):
+            if self._is_winning_move(tmp, i, player.opponent):
+                will_lose = True
+        return will_lose
 
     def _is_winning_move(self, board, indice, player):
         """
