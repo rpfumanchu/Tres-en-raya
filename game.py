@@ -1,7 +1,7 @@
 import pyfiglet
 from enum import Enum, auto
 from oracle import LearningOracle, SmartOracle, BaseOracle
-from player import ReportingPlayer, HumanPlayer
+from player import ReportingPlayer, HumanPlayer,Player
 from match import Match
 from square_board import SquareBoard
 from list_utils import reverse_matriz

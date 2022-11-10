@@ -5,7 +5,7 @@ from beautifultable import BeautifulTable
 from settings import BOARD_LENGTH
 from move import Move
 
-class ReportingPlayer():
+class Player():
     def __init__(self, nombre, caracter=None, opponent = None, oracle = SmartOracle()):
         self.nombre = nombre
         self.caracter = caracter
@@ -82,7 +82,7 @@ class ReportingPlayer():
             return valid[0]
         
 
-class HumanPlayer(ReportingPlayer):
+class HumanPlayer(Player):
     
     def __init__(self, nombre, caracter=None):
         super().__init__(nombre, caracter)
@@ -100,7 +100,7 @@ class HumanPlayer(ReportingPlayer):
             elif raw == "h":
                 print(f"ASI ANDAS!!!!  {self.display_recommendations(board)}")
 
-class ReportingPlayer(ReportingPlayer):
+class ReportingPlayer(Player):
     def on_lose(self):
         """
         avisa al oraculo que su ultima recomendacion ha sido mala
