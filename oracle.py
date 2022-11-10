@@ -114,3 +114,6 @@ class MemoizingOracle(SmartOracle):
 
         #devuelvo lo que esta en el cache
         return self._past_recommendation[key]
+
+class LearningOracle(MemoizingOracle):
+    pass
