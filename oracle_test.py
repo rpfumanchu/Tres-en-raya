@@ -1,7 +1,7 @@
 from oracle import *
 from square_board import SquareBoard
 from settings import BOARD_LENGTH
-from player import Player
+from player import ReportingPlayer
 
 
 def test_base_oracle():
@@ -37,8 +37,8 @@ def test_hash():
 
 
 def test_is_winning_move():
-    winner = Player("xavier", "x")
-    loser = Player("otto", "o")
+    winner = ReportingPlayer("xavier", "x")
+    loser = ReportingPlayer("otto", "o")
 
     empty = SquareBoard()
     almost = SquareBoard.fromList([['o', 'x', 'o', None],

@@ -1,6 +1,6 @@
 from square_board import SquareBoard
 from oracle import BaseOracle
-from player import Player, is_non_full_column, is_within_column_range,is_int
+from player import ReportingPlayer, is_non_full_column, is_within_column_range,is_int
          
          #ESTE TEST LO COMENTO POR QUE YA NO HACE FALTA AL HABER CORREGIDO QUE NO JUEGUE SIEMPRE EN LA PRIMERA POSICION DISPONIBLE Y HACER QUE SEA ALEATORIO
 

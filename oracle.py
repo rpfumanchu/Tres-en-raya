@@ -98,15 +98,15 @@ class MemoizingOracle(SmartOracle):
     def __init__(self):
         super().__init__()
         self._past_recommendation = {}
-    def _make_key(board, player):
+    def _make_key(self, board_code, player):
         """
         la clave debe de combinar el board y el player, de la forma más sencilla posible
         """
-        return f"{board.as_code().raw_code} @ {player.caracter}"
+        return f"{board_code.raw_code} @ {player.caracter}"
 
     def get_recommendation(self, board, player):
         #creamos la clave
-        key = self._make_key(board, player)
+        key = self._make_key(board.as_code(), player)
         
         #miramos en el cache: si no esta calculo y guardo en el cache
         if key not in self._past_recommendation:
@@ -116,4 +116,12 @@ class MemoizingOracle(SmartOracle):
         return self._past_recommendation[key]
 
 class LearningOracle(MemoizingOracle):
-    pass
+    def update_to_bad(self, board_code, player, position):
+        #crear clave
+        key = self._make_key(board_code, player)
+        #obtener la clasificacióm erronea
+        recommendation = self.get_recommendation(SquareBoard.fromBoardCode(board_code), player)
+        #corregirla
+        recommendation[position] = ColumnClassification(position, ColumnRecommendation.BAD)
+        #y sustituirla
+        self._past_recommendation[key] = recommendation

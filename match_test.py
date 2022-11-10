@@ -1,5 +1,5 @@
 import pytest
-from player import Player,HumanPlayer
+from player import ReportingPlayer,HumanPlayer
 from match import Match
 from square_board import SquareBoard
 
@@ -8,9 +8,9 @@ otto = None
 
 def setup():
     global xavier
-    xavier = Player("prof. Xavier")
+    xavier = ReportingPlayer("prof. Xavier")
     global otto
-    otto = Player("Dr Octopus")
+    otto = ReportingPlayer("Dr Octopus")
     
 
 def teardown():

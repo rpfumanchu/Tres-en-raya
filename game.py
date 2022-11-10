@@ -1,7 +1,7 @@
 import pyfiglet
 from enum import Enum, auto
-from oracle import SmartOracle, BaseOracle
-from player import Player, HumanPlayer
+from oracle import LearningOracle, SmartOracle, BaseOracle
+from player import ReportingPlayer, HumanPlayer
 from match import Match
 from square_board import SquareBoard
 from list_utils import reverse_matriz
@@ -22,7 +22,8 @@ class DifficultyLevel(Enum):
 
 class Game():
 
-    def __init__(self, round_type=RoundType.COMPUTER_VS_COMPUTER, match=Match(Player("chip"), Player("chop"))):
+    def __init__(self, round_type=RoundType.COMPUTER_VS_COMPUTER,
+                       match=Match(ReportingPlayer("chip"), ReportingPlayer("chop"))):
         # guardar valores recividos
         self.round_type = round_type
         self.match = match
@@ -62,7 +63,7 @@ class Game():
 
     def display_move(self, player):
         print(
-            f"\n{player.nombre} ({player.caracter}) a movido en la columna {player.last_move} ")
+            f"\n{player.nombre} ({player.caracter}) a movido en la columna {player.last_move.position} ")
 
     def display_board(self):
         """
@@ -143,15 +144,15 @@ class Game():
         """
         _levels = {DifficultyLevel.LOW: BaseOracle(),
                    DifficultyLevel.MEDIUM: SmartOracle(),
-                   DifficultyLevel.HIGH: SmartOracle()}
+                   DifficultyLevel.HIGH: LearningOracle()}
 
         if self.round_type == RoundType.COMPUTER_VS_COMPUTER:
             # ambos jugadores robóticos
-            player1 = Player("T-X", oracle=SmartOracle())
-            player2 = Player("T-1000", oracle=SmartOracle())
+            player1 = ReportingPlayer("T-X", oracle=LearningOracle())
+            player2 = ReportingPlayer("T-1000", oracle=LearningOracle())
         else:
             # ordenador vs humano
-            player1 = Player("T-800", oracle = _levels[self._difficulty_level])
+            player1 = ReportingPlayer("T-800", oracle = _levels[self._difficulty_level])
             player2 = HumanPlayer(nombre=input("introduce tu nombre  "))
         #creamos la partida
         return Match(player1, player2)
@@ -165,6 +166,7 @@ class Game():
         1) Computer VS Computer
         2) Computer VS Human
         """)
+
         response = ""
         while response != "1" and response != "2":
             response = input("Por favor elige entre 1 o 2:  ")

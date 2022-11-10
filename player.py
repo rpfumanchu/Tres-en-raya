@@ -3,7 +3,9 @@ from oracle import BaseOracle, ColumnClassification,ColumnRecommendation,SmartOr
 import random
 from beautifultable import BeautifulTable
 from settings import BOARD_LENGTH
-class Player():
+from move import Move
+
+class ReportingPlayer():
     def __init__(self, nombre, caracter=None, opponent = None, oracle = SmartOracle()):
         self.nombre = nombre
         self.caracter = caracter
@@ -31,13 +33,19 @@ class Player():
         (best, recommendations) = self._ask_oracle(board)
 
        #juego en la mejor
-        self._play_on(board, best.indice)
+        self._play_on(board, best.indice, recommendations)
 
-    def _play_on(self, board, position):
+    def on_win(self):
+        pass
+
+    def on_lose(self):
+        pass
+
+    def _play_on(self, board, position, recommendations):
         #juega en la posicion
         board.add(self.caracter, position)
         #guardo mi ultima jugada
-        self.last_move = position
+        self.last_move = Move(position, board.as_code(), recommendations, self)
 
     #para mostrar las recomendacione al usar help
     def display_recommendations(self, board):
@@ -74,7 +82,7 @@ class Player():
             return valid[0]
         
 
-class HumanPlayer(Player):
+class HumanPlayer(ReportingPlayer):
     
     def __init__(self, nombre, caracter=None):
         super().__init__(nombre, caracter)
@@ -92,7 +100,14 @@ class HumanPlayer(Player):
             elif raw == "h":
                 print(f"ASI ANDAS!!!!  {self.display_recommendations(board)}")
 
-
+class ReportingPlayer(ReportingPlayer):
+    def on_lose(self):
+        """
+        avisa al oraculo que su ultima recomendacion ha sido mala
+        """
+        board_code = self.last_move.board_code
+        position = self.last_move.position
+        self._oracle.update_to_bad(board_code, self, position)
 
 #funciones de validación de indice de columna
 
