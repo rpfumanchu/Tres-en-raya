@@ -6,7 +6,7 @@ from square_board import SquareBoard
 
 class ColumnClassification(Enum):
     FULL = -1      #imposible
-    LOSE = 1       #muy indeseable
+    BAD = 1       #muy indeseable
     MAYBE = 10     #indeseable
     WIN = 100      #la mejor opcion: gano por narices
 
@@ -59,7 +59,7 @@ class SmartOracle(BaseOracle):
             if self._is_winning_move(board, indice, player):
                 recommendation.classification = ColumnClassification.WIN
             elif self._is_losing_move(board, indice, player):
-                recommendation.classification = ColumnClassification.LOSE
+                recommendation.classification = ColumnClassification.BAD
         return recommendation
 
     def _is_losing_move(self, board, indice, player):
@@ -90,3 +90,27 @@ class SmartOracle(BaseOracle):
         tmp.add(player.caracter, indice)
         # devuelvo la copia alterada
         return tmp
+        
+class MemoizingOracle(SmartOracle):
+    """
+    el método get_recommendation esta ahora memorizado
+    """
+    def __init__(self):
+        super().__init__()
+        self._past_recommendation = {}
+    def _make_key(board, player):
+        """
+        la clave debe de combinar el board y el player, de la forma más sencilla posible
+        """
+        return f"{board.as_code().raw_code} @ {player.caracter}"
+
+    def get_recommendation(self, board, player):
+        #creamos la clave
+        key = self._make_key(board, player)
+        
+        #miramos en el cache: si no esta calculo y guardo en el cache
+        if key not in self._past_recommendation:
+            self._past_recommendation[key] = super().get_recommendation(board, player)
+
+        #devuelvo lo que esta en el cache
+        return self._past_recommendation[key]
