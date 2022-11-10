@@ -79,8 +79,6 @@ class Game():
         # imprimirla
         print(bt)
 
-    
-
     def display_result(self):
         winner = self.match.get_winner(self.board)
         if winner != None:

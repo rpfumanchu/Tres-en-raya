@@ -1,6 +1,8 @@
 from linear_board import *
 from settings import BOARD_LENGTH
-from list_utils import transpose,displace_matriz,reverse_matriz
+from list_utils import transpose,displace_matriz,reverse_matriz,collapse_matrix
+from string_utils import explode_list_of_strings, replace_all_in_matrix
+
 
 class SquareBoard():
     """
@@ -16,6 +18,30 @@ class SquareBoard():
         #map devuelve un map object por eso tenemos que trasformarlo a una lista usando list()
         board.columna = list(map(lambda elemento : LinearBoard.fromList(elemento), lista_de_listas))
         return board
+
+    @classmethod
+    def fromBoardCode(cls, board_code):
+        #parsear
+        return cls.fromBoardRawCode(board_code.raw_code)
+
+    @classmethod
+    def fromBoardRawCode(cls, board_raw_code):
+        """
+        trasforma una cadena en formato de board_code en una lista de LinearBoard 
+        y luego lo trasforma en un tablero cuadrado
+        """
+        #convertir la cadena del codigo en una lista de cadenas a esto de le llama tokenizar usamos split() 
+        # para romperlo a partir de | que pusimos con anterioridad
+        list_of_strings = board_raw_code.split("|")
+
+        #trasformar cada cadena en una lista de caracteres
+        matriz = explode_list_of_strings(list_of_strings)
+
+        #cambiamos todas las ocurrencias de . por NONE
+        matriz = replace_all_in_matrix(matriz, ".", None)
+
+        #Trasformamos esa lista en un SquareBoard
+        return cls.fromList(matriz)
 
 
     def __init__(self):
@@ -43,6 +69,9 @@ class SquareBoard():
         for lb in self.columna:
             resultado = resultado and lb.is_full()
         return resultado
+
+    def as_code(self):
+        return BoardCode(self)
 
     def una_matriz(self):
         """
@@ -96,5 +125,27 @@ class SquareBoard():
     #devuelve una cadena de testo que representa el objeto, te permite ver las tripas del objeto
     def __repr__(self):
         return f"{self.__class__}:{self.columna}"
+
+
+class BoardCode:
+    def __init__(self, board):
+        self._raw_code = collapse_matrix(board.una_matriz())
+
+    @property
+    def raw_code(self):
+        return self._raw_code
+
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+        else:
+            #solo importa el raw code
+            return self.raw_code == other.raw_code
+
+    def __hash__(self):
+        return hash(self.raw_code)
+
+    def repr__(self):
+        return f"{self.__class__}: {self.raw_code}"
     
     

@@ -41,14 +41,13 @@ class Player():
 
     #para mostrar las recomendacione al usar help
     def display_recommendations(self, board):
-        #mapeamos las clasificaciones, se devuelve una lista separada por puntos y a partir de la posicion 1 de la lista de clasificaciones.
+        #mapeamos las clasificaciones, se devuelve una lista, el 1 es el rango de la fila osea una de la lista de clasificaciones
         recs = map(lambda x: str(x.classification).split('.')[1].lower(), self.oracle.get_recommendation(board, self))
 
         bt = BeautifulTable()
         bt.rows.append(recs)
 
         bt.columns.header = [str(i) for i in range(BOARD_LENGTH)]
-
         print(bt)
 
     def _ask_oracle(self, board):
@@ -91,7 +90,7 @@ class HumanPlayer(Player):
                 pos = int(raw)
                 return (ColumnRecommendation(pos, None), None)
             elif raw == "h":
-                print(self.display_recommendations(board,))
+                print(f"ASI ANDAS!!!!  {self.display_recommendations(board)}")
 
 
 

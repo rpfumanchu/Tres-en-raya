@@ -154,3 +154,26 @@ def all_same(l):
                 break
         return acumulador
 
+def collapse_list(l, empty = "."):
+    """
+    concatena todas las cadenas de la lista en una sola lista
+    """
+    collapsed = ""
+    for elemen in l:
+        if elemen == None:
+            collapsed = collapsed + empty
+        else:
+            collapsed = collapsed + elemen
+    return collapsed
+
+def collapse_matrix(matriz, empty=".", fence = "|"):
+    """
+    concatena todas las cadenas en una sola separada por |
+    """
+    collapsed = ""
+    for elemen in matriz:
+        collapsed = collapsed + fence + collapse_list(elemen, empty)
+    return collapsed[1:]
+    
+
+

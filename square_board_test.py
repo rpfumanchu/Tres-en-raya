@@ -2,6 +2,7 @@ import pytest
 
 from square_board import *
 
+
 def test_empty_board():
 
     board = SquareBoard()
@@ -9,7 +10,9 @@ def test_empty_board():
     assert board.is_full() == False
     assert board.is_victory('o') == False
     assert board.is_victory('x') == False
-#metodo fromList(), es una fabrica de
+# metodo fromList(), es una fabrica de
+
+
 def test_vertical_victory():
     vertical = SquareBoard.fromList([['o', 'x', 'x', 'x', ],
                                      [None, None, None, None, ],
@@ -49,3 +52,18 @@ def test_rising_victory():
                                            ])
     assert rising_victory.is_victory('x')
     assert rising_victory.is_victory('o') == False
+
+
+def test_board_code():
+    board = SquareBoard.fromList([['x', 'o', None, None],
+                                  ['o', 'x', None, None],
+                                  ['x', 'o', 'x', 'o'],
+                                  ['x', 'x', 'o', None]])
+
+    code = board.as_code()
+
+    clone_board = SquareBoard.fromBoardCode(code)
+
+    assert clone_board == board
+    assert clone_board.as_code() == code
+    assert clone_board.as_code().raw_code == code.raw_code
