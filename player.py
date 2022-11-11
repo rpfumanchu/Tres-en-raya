@@ -1,5 +1,5 @@
 from list_utils import all_same
-from oracle import BaseOracle, ColumnClassification,ColumnRecommendation,SmartOracle
+from oracle import ColumnClassification,ColumnRecommendation,SmartOracle
 import random
 from beautifultable import BeautifulTable
 from settings import BOARD_LENGTH
@@ -11,7 +11,8 @@ class Player():
         self.caracter = caracter
         self.oracle = oracle
         self.opponent = opponent
-        self.last_move = None
+        #ahora en last_move le ponemos una lista vacia en vez de None porque queremos guardar las ultimas jugadas
+        self.last_moves = []
 
     @property
     def opponent(self):
@@ -44,8 +45,8 @@ class Player():
     def _play_on(self, board, position, recommendations):
         #juega en la posicion
         board.add(self.caracter, position)
-        #guardo mi ultima jugada
-        self.last_move = Move(position, board.as_code(), recommendations, self)
+        #guardo mi ultima jugada(siempre al principio de la lista)
+        self.last_moves.insert(0, Move(position, board.as_code(), recommendations, self))
 
     #para mostrar las recomendacione al usar help
     def display_recommendations(self, board):
@@ -100,14 +101,13 @@ class HumanPlayer(Player):
             elif raw == "h":
                 print(f"ASI ANDAS!!!!  {self.display_recommendations(board)}")
 
+
 class ReportingPlayer(Player):
     def on_lose(self):
         """
-        avisa al oraculo que su ultima recomendacion ha sido mala
+        Le pide al oráculo que revise sus recomendaciones
         """
-        board_code = self.last_move.board_code
-        position = self.last_move.position
-        self._oracle.update_to_bad(board_code, self, position)
+        self.oracle.backtrack(self.last_moves)
 
 #funciones de validación de indice de columna
 

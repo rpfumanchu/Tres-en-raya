@@ -49,20 +49,26 @@ class BaseOracle():
 
     def no_good_options(self, board, player):
         """
-        detecta que todas las clasificaciones sean bad o full
+        Detecta que todas las clasificaciones sean BAD o FULL
         """
-        #obtener las clasificaciones
-        ColumnRecommendation = self.get_recommendation(board, player)
-
-        #comprobamos que todas sean del tipo correcto
+        # obtener las clasificaciuones
+        columnRecommendations = self.get_recommendation(board, player)
+        # comprobamos que todas sean del tipo correcto
         result = True
-        for recom in ColumnRecommendation:
-            if (recom.classification == ColumnClassification.WIN) or (recom.classification == ColumnClassification.MAYBE):
+        for rec in columnRecommendations:
+            if (rec.classification == ColumnClassification.WIN) or (rec.classification == ColumnClassification.MAYBE):
                 result = False
                 break
         return result
 
+    #para que todos los oraculos sean iguales y ni de error vamos a implementar los metodos backtrack y update_to_bad
+    #  le ponemos un pass para que no haga nada, ya que solo queremos que realmente los use LearningOracle
 
+    def update_to_bad(self, move):
+        pass
+
+    def backtrack(self, list_of_moves):
+        pass
 
 class SmartOracle(BaseOracle):
     def get_column_recommendation(self, board, indice, player):
@@ -132,13 +138,39 @@ class MemoizingOracle(SmartOracle):
         #devuelvo lo que esta en el cache
         return self._past_recommendation[key]
 
+
 class LearningOracle(MemoizingOracle):
-    def update_to_bad(self, board_code, player, position):
-        #crear clave
-        key = self._make_key(board_code, player)
-        #obtener la clasificacióm erronea
-        recommendation = self.get_recommendation(SquareBoard.fromBoardCode(board_code), player)
-        #corregirla
-        recommendation[position] = ColumnClassification(position, ColumnRecommendation.BAD)
-        #y sustituirla
+    def update_to_bad(self, move):
+        # crear clave
+        key = self._make_key(move.board_code, move.player)
+        # obtener la clasificación erronea
+        recommendation = self.get_recommendation(
+            SquareBoard.fromBoardCode(move.board_code), move.player)
+        # corregirla
+        recommendation[move.position] = ColumnRecommendation(
+            move.position, ColumnClassification.BAD)
+        # sustituirla
         self._past_recommendation[key] = recommendation
+
+
+    def backtrack(self, list_of_moves):
+        """
+        Repasa todos las jugadas y si encuentra una en la cual todo 
+        estaba perdido, quiere decir que la anterior tiene que ser 
+        actualizada a BAD
+        """
+        # los moves están en orden inverso (el primero será el último)
+        print('Aprendiendo...')
+        # por cada move...
+        for move in list_of_moves:
+            # lo reclasifico a bad
+            self.update_to_bad(move)
+            # evaluo si todo estaba perdido tras esta clasificación
+            board = SquareBoard.fromBoardCode(move.board_code)
+            if not self.no_good_options(board, move.player):
+                # si no todo estaba perdido, salgo. Sino, sigo
+                break
+
+
+        print(f'en la base de mi conocimiento: {len(self._past_recommendation)}')
+

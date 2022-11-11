@@ -1,7 +1,7 @@
 import pyfiglet
 from enum import Enum, auto
-from oracle import LearningOracle, SmartOracle, BaseOracle
-from player import ReportingPlayer, HumanPlayer,Player
+from oracle import LearningOracle, SmartOracle,BaseOracle
+from player import ReportingPlayer, HumanPlayer
 from match import Match
 from square_board import SquareBoard
 from list_utils import reverse_matriz
@@ -62,8 +62,9 @@ class Game():
                 break
 
     def display_move(self, player):
+        #ahora le pedimos que sea en la posicion primera con [0]
         print(
-            f"\n{player.nombre} ({player.caracter}) a movido en la columna {player.last_move.position} ")
+            f"\n{player.nombre} ({player.caracter}) a movido en la columna {player.last_moves[0].position} ")
 
     def display_board(self):
         """
@@ -94,6 +95,8 @@ class Game():
         """
         winner = self.match.get_winner(self.board)
         if winner != None:
+            winner.on_win()
+            winner.opponent.on_lose()
             # hay un vencedor
             return True
         elif self.board.is_full():
