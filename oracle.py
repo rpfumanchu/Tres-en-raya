@@ -6,7 +6,8 @@ from square_board import SquareBoard
 
 class ColumnClassification(Enum):
     FULL = -1      #imposible
-    BAD = 1       #muy indeseable
+    LOSE = 1       #derrota inminente
+    BAD = 5        #muy indeseable
     MAYBE = 10     #indeseable
     WIN = 100      #la mejor opcion: gano por narices
 
@@ -82,7 +83,7 @@ class SmartOracle(BaseOracle):
             if self._is_winning_move(board, indice, player):
                 recommendation.classification = ColumnClassification.WIN
             elif self._is_losing_move(board, indice, player):
-                recommendation.classification = ColumnClassification.BAD
+                recommendation.classification = ColumnClassification.LOSE
         return recommendation
 
     def _is_losing_move(self, board, indice, player):
@@ -120,7 +121,7 @@ class MemoizingOracle(SmartOracle):
     """
     def __init__(self):
         super().__init__()
-        self._past_recommendation = {}
+        self._past_recommendations = {}
     def _make_key(self, board_code, player):
         """
         la clave debe de combinar el board y el player, de la forma más sencilla posible
@@ -132,12 +133,11 @@ class MemoizingOracle(SmartOracle):
         key = self._make_key(board.as_code(), player)
         
         #miramos en el cache: si no esta calculo y guardo en el cache
-        if key not in self._past_recommendation:
-            self._past_recommendation[key] = super().get_recommendation(board, player)
+        if key not in self._past_recommendations:
+            self._past_recommendations[key] = super().get_recommendation(board, player)
 
         #devuelvo lo que esta en el cache
-        return self._past_recommendation[key]
-
+        return self._past_recommendations[key]
 
 class LearningOracle(MemoizingOracle):
     def update_to_bad(self, move):
@@ -150,7 +150,7 @@ class LearningOracle(MemoizingOracle):
         recommendation[move.position] = ColumnRecommendation(
             move.position, ColumnClassification.BAD)
         # sustituirla
-        self._past_recommendation[key] = recommendation
+        self._past_recommendations[key] = recommendation
 
 
     def backtrack(self, list_of_moves):
@@ -172,5 +172,6 @@ class LearningOracle(MemoizingOracle):
                 break
 
 
-        print(f'en la base de mi conocimiento: {len(self._past_recommendation)}')
+        print(f'en la base de mi conocimiento: {len(self._past_recommendations)}')
+
 

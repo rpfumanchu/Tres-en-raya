@@ -8,7 +8,7 @@ def test_creation():
 
     assert g != None
 
-def test_is_game_over():
+def test_has_winner_or_tie():
     game = Game()
     win_x = SquareBoard.fromList([['x', 'o', None, None, ],
                                   ['o', 'x', None, None, ],
@@ -32,16 +32,16 @@ def test_is_game_over():
                                        [None, None, None, None, ]])
 
     game.board = win_x
-    assert game._is_game_over() == True
+    assert game._has_winner_or_tie() == True
 
     game.board = win_o
-    assert game._is_game_over() == True
+    assert game._has_winner_or_tie() == True
 
     game.board = tie
-    assert game._is_game_over() == True
+    assert game._has_winner_or_tie() == True
 
     game.board = unfinished
-    assert game._is_game_over() == False
+    assert game._has_winner_or_tie() == False
 
     
     

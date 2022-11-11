@@ -54,12 +54,18 @@ class Game():
             self.display_move(current_player)
             # imprimi el tablero
             self.display_board()
-            # si el juego a terminado...
-            if self._is_game_over():
+            # hay un vencdor o empate
+            if self._has_winner_or_tie():
                 # muestro resultado final
                 self.display_result()
+
+                if self.match.is_match_over():
                 # salgo del bucle
-                break
+                    break
+                else:
+                    #reseteamos el bucle
+                    self.board = SquareBoard()
+                    self.display_board()
 
     def display_move(self, player):
         #ahora le pedimos que sea en la posicion primera con [0]
@@ -84,12 +90,12 @@ class Game():
     def display_result(self):
         winner = self.match.get_winner(self.board)
         if winner != None:
-            print(f"\n{winner.nombre} ({winner.caracter}) ganador!!! ")
+            print(f"\n{winner.nombre}jugando con la ficha ({winner.caracter}) es el ganador!!! ")
         else:
             print(
                 f"\n hay un empate {self.match.get_player('x').nombre} (x) y {self.match.get_player('o').nombre} (o) ")
 
-    def _is_game_over(self):
+    def _has_winner_or_tie(self):
         """
         el juego se ha terminado cuabdo hay un vencedor o hay un empate
         """

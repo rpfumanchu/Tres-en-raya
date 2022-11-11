@@ -2,7 +2,7 @@ from list_utils import all_same
 from oracle import ColumnClassification,ColumnRecommendation,SmartOracle
 import random
 from beautifultable import BeautifulTable
-from settings import BOARD_LENGTH
+from settings import BOARD_LENGTH, DEBUG
 from move import Move
 
 class Player():
@@ -43,6 +43,9 @@ class Player():
         pass
 
     def _play_on(self, board, position, recommendations):
+        #imprimo recomendaciones en caso de debug
+        if DEBUG:
+            self.display_recommendations(board)
         #juega en la posicion
         board.add(self.caracter, position)
         #guardo mi ultima jugada(siempre al principio de la lista)
@@ -50,7 +53,7 @@ class Player():
 
     #para mostrar las recomendacione al usar help
     def display_recommendations(self, board):
-        #mapeamos las clasificaciones, se devuelve una lista, el 1 es el rango de la fila osea una de la lista de clasificaciones
+        #mapeamos las clasificaciones, se devuelve una lista, 
         recs = map(lambda x: str(x.classification).split('.')[1].lower(), self.oracle.get_recommendation(board, self))
 
         bt = BeautifulTable()
@@ -108,6 +111,9 @@ class ReportingPlayer(Player):
         Le pide al oráculo que revise sus recomendaciones
         """
         self.oracle.backtrack(self.last_moves)
+        #board_code = self.last_moves.board_code
+        #position = self.last_moves.position
+        #self.oracle.update_to_bad(board_code, self, position)
 
 #funciones de validación de indice de columna
 
