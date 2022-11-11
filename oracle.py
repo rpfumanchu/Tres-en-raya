@@ -47,6 +47,23 @@ class BaseOracle():
             classification = ColumnClassification.FULL
         return ColumnRecommendation(indice, classification)
 
+    def no_good_options(self, board, player):
+        """
+        detecta que todas las clasificaciones sean bad o full
+        """
+        #obtener las clasificaciones
+        ColumnRecommendation = self.get_recommendation(board, player)
+
+        #comprobamos que todas sean del tipo correcto
+        result = True
+        for recom in ColumnRecommendation:
+            if (recom.classification == ColumnClassification.WIN) or (recom.classification == ColumnClassification.MAYBE):
+                result = False
+                break
+        return result
+
+
+
 class SmartOracle(BaseOracle):
     def get_column_recommendation(self, board, indice, player):
         """
